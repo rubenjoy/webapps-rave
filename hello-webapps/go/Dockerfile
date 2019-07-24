@@ -5,7 +5,8 @@ ARG GOMAIN=echo-webapp.go
 WORKDIR /go/src/webapps
 ENV GOPATH /go
 
-RUN apk add -u alpine-sdk
+RUN apk -U add ca-certificates build-base git && \
+    rm -r /var/cache/apk/*
 
 COPY * /go/src/webapps/
 
