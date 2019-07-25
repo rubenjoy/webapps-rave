@@ -8,7 +8,7 @@ ENV GOPATH /go
 RUN apk -U add ca-certificates build-base git && \
     rm -r /var/cache/apk/*
 
-COPY * /go/src/webapps/
+COPY . /go/src/webapps
 
 RUN go get -d -v ./...
 RUN go build -a -o webapp $GOMAIN

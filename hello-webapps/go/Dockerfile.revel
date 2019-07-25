@@ -1,0 +1,24 @@
+FROM golang:1.12.6-alpine3.9 AS build
+
+WORKDIR /go/src/webapps
+ENV GOPATH /go
+
+RUN apk -U add ca-certificates \
+               build-base \
+               git && \
+    rm -r /var/cache/apk/*
+
+ADD revel-webapp revel-webapp/
+
+RUN go get -d -v ./... github.com/revel/cmd/revel
+RUN go install github.com/revel/cmd/revel
+RUN revel build -a webapps/revel-webapp -t /go/bin/revel-webapp -s -m prod
+
+FROM alpine:3.9
+
+WORKDIR /go/apps
+COPY --from=build /go/bin/revel-webapp revel-webapp/
+
+EXPOSE 3000
+
+ENTRYPOINT ["revel-webapp/run.sh"]
